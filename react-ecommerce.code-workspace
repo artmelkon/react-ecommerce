@@ -7,11 +7,11 @@
   "settings": {
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 1000,
-    "editor.fontSize": 14,
+    "editor.fontSize": 15,
     "editor.wordWrap": "on",
     "editor.tabSize": 2,
     "workbench.colorCustomizations": {
-      "tab.activeBackground": "#035523",
+      "tab.activeBackground": "#034c1f",
       "tab.activeBorder": "#ff0000"
     },
     "editor.formatOnSave": true

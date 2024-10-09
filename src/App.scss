@@ -3,7 +3,8 @@
 //  Import Bulma from nodo_modules
 // @use "bulma/sass/base";
 // @use "bulma/sass/themes";
-@import "../node_modules/bulma/sass/utilities/index";
+
+@import "../node_modules/bulma/sass/utilities";
 @import "../node_modules/bulma/sass/elements/button.scss";
 @import "../node_modules/bulma/sass/elements/content.scss";
 @import "../node_modules/bulma/sass/layout/hero.scss";
@@ -139,6 +140,7 @@ form {
 
 .error {
   border: 1px solid red;
+  background-color: #fce8e8;
 }
 
 .error-message {
