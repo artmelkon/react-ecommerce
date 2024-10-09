@@ -16,11 +16,11 @@ const CartItem = ({ id, title, price, quantity, imageUrl }) => {
         <p>Quantity: {quantity}</p>
       </div>
       <div>
-        <button>
+        <button flassName='btn-increase'>
           <PlusCircleIcon with="20px" />
         </button>
         <button>
-          {quantity === 1 ? <TrashIcon with='20px' /> : <MinusCircleIcon with='20px' />}
+          {quantity === 1 ? <TrashIcon className='btn-trash' with='20px' /> : <MinusCircleIcon className='btn-decrease' with='20px' />}
         </button>
 
       </div>
