@@ -12,5 +12,6 @@ router.post('/create-payment-intent', PaymentController.paymentIntent)
 router.post('/webhook', WebhookContorller.webhooks);
 router.post('/signup', AuthController.postSignUp);
 router.post('/signin', AuthController.postSignIn);
+router.post('/me', AuthController.postMe)
 
 export { router };

@@ -16,7 +16,7 @@ const SignUp = () => {
   const { signin } = useContext(AuthContext)
 
   const onSubmit = useCallback(async (data) => {
-    let isMounted = true;
+    let isMounted = Boolean(true);
     const controller = new AbortController();
 
     const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signup`, {
@@ -25,12 +25,13 @@ const SignUp = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      // credentials: true,
       body: JSON.stringify(data)
     })
     if (!result.ok) throw new Error('Something went wrong');
-    const token = await result.json();
-    return signin(token)
+    const token = isSubmitting && await result.json();
+    signin(token)
+
+    return () => {isMounted = false; controller.abort()}
   }, [signin])
 
   return (
