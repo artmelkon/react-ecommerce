@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-const secretApiKey = process.env.STRIPE_SECRET_KEY;
+const secretApiKey = process.env.STRIPE_SECRET_KEY as string;
 
 if (!secretApiKey) throw new Error(`STRIPE_SECRET_KEY is not defined`)
 

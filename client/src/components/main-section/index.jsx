@@ -1,9 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import studioBag from '../../assets/studio-bag.png';
 import './index.styles.scss';
 
 const MainSection = ({ history }) => {
+  const studioBag = '/assets/studio-bag.png';
+  
   return (
     <div className='main-section-container'>
       <div className='main-section-middle'>
