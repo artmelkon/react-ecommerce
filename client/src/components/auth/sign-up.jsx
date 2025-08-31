@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import Layout from '../shared/layout';
 import AuthContext from '../../context/auth';
-import { auth } from '../../firebase/index.ts'
+import { auth } from '../../firebase/index.js'
 import { getFirebaseAuthErrorMessage } from '../../firebase/firebaseErrors.ts';
 import './sign-up.styles.scss';
 
