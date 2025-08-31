@@ -1,5 +1,3 @@
-@use "sass:list";
-
 @use "shared";
 @use "../utilities/css-variables" as cv;
 @use "../utilities/initial-variables" as iv;
@@ -24,7 +22,7 @@ $textarea-colors: shared.$form-colors !default;
 
   // Colors
   @each $name, $pair in $textarea-colors {
-    $color: list.nth($pair, 1);
+    $color: nth($pair, 1);
 
     &.#{iv.$class-prefix}is-#{$name} {
       @include cv.register-vars(

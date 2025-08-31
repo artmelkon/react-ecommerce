@@ -1,8 +1,11 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import Layout from '../shared/layout';
 import AuthContext from '../../context/auth';
+import { auth } from '../../firebase/index.ts'
+import { getFirebaseAuthErrorMessage } from '../../firebase/firebaseErrors.ts';
 import './sign-up.styles.scss';
 
 const initialValues = {
@@ -13,26 +16,33 @@ const initialValues = {
 const SignUp = () => {
   const [values, setValues] = useState(initialValues);
   const { register, handleSubmit, formState: { errors, isSubmitting, isDirty, isValid } } = useForm(initialValues)
-  const { signin } = useContext(AuthContext)
+  const { signin } = useContext(AuthContext);
+  const history = useHistory();
 
   const onSubmit = useCallback(async (data) => {
-    let isMounted = Boolean(true);
-    const controller = new AbortController();
+    try {
+      const controller = new AbortController();
+      const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signup`, {
+        signal: controller.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      if (!result.ok) throw new Error('Something went wrong');
+      isSubmitting && await result.json();
+      const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      signin(user.accessToken)
+      history.push('/shop')
+    } catch (error) {
+      const message = getFirebaseAuthErrorMessage(error.code);
+      alert(message);
+      console.error("Error during sign-up:", error);
+    }
 
-    const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signup`, {
-      signal: controller.signal,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    if (!result.ok) throw new Error('Something went wrong');
-    const token = isSubmitting && await result.json();
-    signin(token)
 
-    return () => {isMounted = false; controller.abort()}
-  }, [signin])
+  }, [signin, isSubmitting, history])
 
   return (
     <Layout>

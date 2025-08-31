@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
 import { CartContext } from "../../context/cart-context";
 import './index.styles.scss';
