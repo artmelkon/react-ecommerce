@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-dotenv.config(); // dotenc config must be before any file import
+dotenv.config({ path: '.env' }); // dotenc config must be before any file
 
 import { routerApi } from './utils/routes';
 import { dbConnect } from './utils/db-connect';
