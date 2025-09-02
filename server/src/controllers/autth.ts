@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 
 
 export const postSignIn = async (req: Request, res: Response) => {
-  const { _id, email, password } = req.body;
+  const { _id, password } = req.body;
   const user: any = await User.findById(_id);
 
   if (!user) return res.status(400).json({ error: "The user does not exist!" });
@@ -14,7 +14,6 @@ export const postSignIn = async (req: Request, res: Response) => {
   if (!validPass) return res.status(400).json({ error: "Invalid username or password" });
 
   const token = generateAuthToken({ email: user.email, password: user.password });
-  console.log('token: ', token)
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: true,

@@ -1,20 +1,30 @@
 import { useState, createContext, useEffect } from "react";
 import { auth } from "../firebase/config.js";
 
+type User = any | null;
 
+interface AuthContextType {
+  user: User;
+  loading: boolean;
+}
 
-const AuthContext = createContext({
+const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
 });
 
-export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const AuthContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const signoutFromFirebase = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
+        console.log("cntx user: ", userAuth);
         setUser(userAuth);
         setLoading(false);
       } else {

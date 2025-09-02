@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
@@ -6,33 +6,35 @@ import Layout from '../shared/layout';
 import AuthContext from '../../context/auth';
 import { auth } from '../../firebase/config.js'
 import { getFirebaseAuthErrorMessage } from '../../firebase/firebaseErrors.ts';
-import './sign-up.styles.scss';
+import './auth.styles.scss';
 
 const initialValues = {
   firstname: '',
   email: '',
   password: ''
 }
-const SignUp = ({history}) => {
+const SignUp = ({ history }) => {
   const [values, setValues] = useState(initialValues);
-  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty, isValid } } = useForm(initialValues)
+  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty, isValid } } = useForm(initialValues);
+  const abortControllerRef = useRef(null);
   const { signin } = useContext(AuthContext);
 
   const onSubmit = useCallback(async (data) => {
     try {
-      const controller = new AbortController();
-      const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      abortControllerRef.current = new AbortController();
+      const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signup`, {
-        signal: controller.signal,
+        signal: abortControllerRef.current.signal,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...data, _id: user.uid })
+        body: JSON.stringify({ ...data, _id: firebaseUser.uid })
       })
       if (!result.ok) throw new Error('Something went wrong');
-      isSubmitting && await result.json();
-      signin(user.accessToken)
+      const user = await result.json();
+      if (!abortControllerRef.current.signal.aborted && user._id && user._id === firebaseUser.uid)
+        signin(firebaseUser.accessToken)
       history.push('/shop')
     } catch (error) {
       const message = getFirebaseAuthErrorMessage(error.code);
@@ -41,7 +43,7 @@ const SignUp = ({history}) => {
     }
 
 
-  }, [signin, isSubmitting, history])
+  }, [signin, history])
 
   return (
     <Layout>
@@ -111,6 +113,9 @@ const SignUp = ({history}) => {
               }
             </div>
           </form>
+        </div>
+        <div className='auth-link'>
+          Already have an account? <a href='/signin'>Sign In</a>
         </div>
       </div>
     </Layout>

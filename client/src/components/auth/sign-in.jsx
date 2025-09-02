@@ -1,17 +1,15 @@
-import React, { useState, useCallback, useContext, useRef, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { withRouter, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import Layout from '../shared/layout';
-import AuthContext from '../../context/auth';
-import './sign-up.styles.scss';
+import './auth.styles.scss';
 
 const initUser = { email: '', password: '' };
 
 const SignIn = ({ history }) => {
   const [values, setValues] = useState(initUser);
-  const { signin } = useContext(AuthContext)
   const { register, handleSubmit, formState: { errors, isSubmitting, isDirty, isValid } } = useForm({
     defaultValues: initUser
   });
@@ -33,10 +31,10 @@ const SignIn = ({ history }) => {
       if (!result.ok) throw new Error(`HTTP error! status: ${result.status}`);
       const user = await result.json();
 
-      if (!abortControllerRef.current.signal.aborted && user) {
-        signin(firebaseUser.accessToken)
+      if (!abortControllerRef.current.signal.aborted && user._id && user._id === firebaseUser.uid) {
+        history.push('/shop')
       }
-      history.push('/shop')
+
     } catch (error) {
       // Handle different types of errors
       if (error.name === 'AbortError') {
@@ -49,7 +47,7 @@ const SignIn = ({ history }) => {
       throw error; // Re-throw to let react-hook-form handle it
     }
 
-  }, [signin]);
+  }, [history]);
 
   useEffect(() => {
     return () => {
@@ -94,10 +92,11 @@ const SignIn = ({ history }) => {
               />
             </div>
             <div className='submit-btn'>
+
               <button
                 disabled={!isDirty || !isValid || isSubmitting}
                 className='button is-black nomad-btn submit'
-              >SIGN IN
+              > SIGN IN
               </button>
             </div>
             <div>
@@ -109,6 +108,9 @@ const SignIn = ({ history }) => {
               }
             </div>
           </form>
+        </div>
+        <div className='auth-link'>
+          Dont have an account? <Link to='/signup'>Sign Up</Link>
         </div>
       </div>
     </Layout>
