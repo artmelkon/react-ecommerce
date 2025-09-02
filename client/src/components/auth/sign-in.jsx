@@ -1,6 +1,8 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useRef, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase/config';
 import Layout from '../shared/layout';
 import AuthContext from '../../context/auth';
 import './sign-up.styles.scss';
@@ -13,29 +15,49 @@ const SignIn = ({ history }) => {
   const { register, handleSubmit, formState: { errors, isSubmitting, isDirty, isValid } } = useForm({
     defaultValues: initUser
   });
+  const abortControllerRef = useRef(null);
   const { email, password } = errors;
 
   const onSubmit = useCallback(async (data) => {
-    let isMounted = Boolean(true);
-    const controller = new AbortController();
+    abortControllerRef.current = new AbortController();
+    try {
+      const { user: firebaseUser } = await signInWithEmailAndPassword(auth, data.email, data.password)
+      const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signin`, {
+        signal: abortControllerRef.current.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data, _id: firebaseUser.uid }),
+      });
+      if (!result.ok) throw new Error(`HTTP error! status: ${result.status}`);
+      const user = await result.json();
 
-    const result = await fetch(`${process.env.REACT_APP_SERVER_URI}/api/signin`, {
-      signal: controller.signal,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!result.ok) throw new Error('Something went wrong');
-    const user = isMounted && await result.json();
-    signin(user)
+      if (!abortControllerRef.current.signal.aborted && user) {
+        signin(firebaseUser.accessToken)
+      }
+      history.push('/shop')
+    } catch (error) {
+      // Handle different types of errors
+      if (error.name === 'AbortError') {
+        console.log('Request was aborted');
+        return;
+      }
 
-    return () => {
-      isMounted = false;
-      controller.abort();
+      // Handle other errors (network, parsing, etc.)
+      console.error('Submission error:', error);
+      throw error; // Re-throw to let react-hook-form handle it
     }
-  }, [signin])
+
+  }, [signin]);
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }
+  }, [])
 
   return (
     <Layout>

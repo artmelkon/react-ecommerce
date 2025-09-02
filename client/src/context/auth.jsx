@@ -4,7 +4,7 @@ const AuthContext = createContext({
   token: '',
   isLoggedIn: false,
   signin: (token) => { },
-  signout: () => { }
+  signout: () => { },
 });
 
 function retrieveStoredToken() {
