@@ -7,7 +7,7 @@ export const isInCart = (product, cartItems) => {
 
 const url = process.env.REACT_APP_SERVER_URI;
 
-export async function fetchFormAPI(endpoint, opts) {
+export async function fetchFromAPI(endpoint, opts) {
   const { method, body } = {
     method: 'POST',
     body: null,

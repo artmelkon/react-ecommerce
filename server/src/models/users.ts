@@ -18,7 +18,8 @@ const userSchema = new Schema({
     type: String,
     // min: 8,
     max: 12
-  }
+  },
+  stripeCustomerId: String
 })
 
 const User = mongoose.model('User', userSchema);

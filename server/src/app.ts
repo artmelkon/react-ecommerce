@@ -1,11 +1,10 @@
+import './env'
 import express from 'express';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-dotenv.config({ path: '.env' }); // dotenc config must be before any file
 
 import { routerApi } from './utils/routes';
 import { dbConnect } from './utils/db-connect';
-
+import { decodeJWT } from './utils/decodeJWT';
 
 console.log('client uri: ', process.env.WEB_APP_URL)
 
@@ -19,6 +18,7 @@ app.use(express.json({
   verify: (req: any, res, buffer) => req['rawBody'] = buffer
 }))
 app.use(cors(corsOptions));
+app.use(decodeJWT)
 
 routerApi(app)
 dbConnect(app)

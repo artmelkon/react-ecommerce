@@ -31,10 +31,9 @@ const SignIn = ({ history }) => {
       if (!result.ok) throw new Error(`HTTP error! status: ${result.status}`);
       const user = await result.json();
 
-      if (!abortControllerRef.current.signal.aborted && user._id && user._id === firebaseUser.uid) {
+      if (!abortControllerRef.current.signal.aborted && user) {
         history.push('/shop')
       }
-
     } catch (error) {
       // Handle different types of errors
       if (error.name === 'AbortError') {

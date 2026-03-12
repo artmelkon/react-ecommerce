@@ -4,6 +4,11 @@ import * as ChecoutControlers from '../controllers/checkout';
 import * as WebhookContorller from '../controllers/webhooks';
 import * as PaymentController from '../controllers/paymentintent';
 import * as AuthController from '../controllers/autth';
+import { setupIntent } from '../controllers/stripe/setupIntent';
+import { getCards } from '../controllers/stripe/getPaymentMethod';
+import { validateUser } from '../utils/validate.User';
+import { updatePaymentIntent } from '../controllers/stripe/updatePaymentIntent'
+
 const router = express.Router();
 
 router.post('/product', ProductContorlers.postProduct);
@@ -13,6 +18,9 @@ router.post('/webhook', WebhookContorller.webhooks);
 router.post('/signup', AuthController.postSignUp);
 router.post('/signin', AuthController.postSignIn);
 router.post('/me', AuthController.postMe);
-router.get('/users/:id', AuthController.getUser)
+router.get('/users/:id', AuthController.getUser);
+router.post('/save-payment-method', validateUser, setupIntent);
+router.get('/get-payment-methods', validateUser, getCards);
+router.put('/update-payment-intent', validateUser, updatePaymentIntent);
 
 export { router };

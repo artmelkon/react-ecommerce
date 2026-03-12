@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useCallback } from "react";
 import { useStripe } from '@stripe/react-stripe-js';
 import { CartContext } from "../../../context/cart-context";
-import { fetchFormAPI } from "../../../lib/helper";
+import { fetchFromAPI } from "../../../lib/helper";
 
 const StripeCheckout = () => {
   const [email, setEmail] = useState('')
@@ -29,7 +29,7 @@ const StripeCheckout = () => {
       }
     }));
 
-    const response = await fetchFormAPI('create-checkout-session', {
+    const response = await fetchFromAPI('create-checkout-session', {
       body: { line_items, customer_email: email }
     });
 
