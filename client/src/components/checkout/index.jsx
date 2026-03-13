@@ -17,9 +17,9 @@ const Checkout = () => {
   }
   return <Layout>
     <div className='checkout'>
-      <h2>Chuckout Summary</h2>
-      <h3>{`Tottal Items: ${itemCount}`}</h3>
-      <h4>{`Amojnt to Pay: $${total}`}</h4>
+      <h2>Checkout Summary</h2>
+      <h3>{`Total Items: ${itemCount}`}</h3>
+      <h4>{`Amount to Pay: $${total}`}</h4>
       <div style={addressShown}>
         <ShippingAddress setShipping={setShipping} />
       </div>

@@ -17,7 +17,7 @@ const MainSection = ({ history }) => {
             From the board room to the fitness studio, and everywhere in between,
             each Nomads piece is thoughtfully created to be the perfect balance of
             form and function.</p>
-          <button className='button is-black' id='shop-now' onClick={() => history.push('/product/1')}>SUDIO BAG</button>
+          <button className='button is-black' id='shop-now' onClick={() => history.push('/product/1')}>STUDIO BAG</button>
         </div>
       </div>
     </div>
